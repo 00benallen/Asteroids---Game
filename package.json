@@ -1,0 +1,22 @@
+{
+  "name": "asteroids",
+  "version": "0.0.1",
+  "description": "Asteroids game",
+  "private": true,
+  "scripts": {
+    "compile": "rm -rf dist && webpack && cp src/*.html dist",
+    "start": "npm run compile && open -a \"Google Chrome\" dist/index.html"
+  },
+  "author": "Ben Pinhorn",
+  "license": "MIT",
+  "dependencies": {
+    "rxjs": "^6.2.2"
+  },
+  "devDependencies": {
+    "ts-loader": "^4.4.2",
+    "typescript": "^2.9.2",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0",
+    "onchange": "^4.1.0"
+  }
+}
