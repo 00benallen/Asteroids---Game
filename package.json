@@ -4,7 +4,7 @@
   "description": "Asteroids game",
   "private": true,
   "scripts": {
-    "compile": "rm -rf dist && webpack && cp src/*.html dist",
+    "compile": "rm -rf dist && webpack && cp src/*.html dist && cp -r assets/* dist",
     "start": "npm run compile && open -a \"Google Chrome\" dist/index.html"
   },
   "author": "Ben Pinhorn",

@@ -1,5 +1,6 @@
 import { Rectangle } from './Rectangle'
 import { KeyboardService } from './Keyboard';
+import { Player } from './Player';
 
 const enemyColors: string[] = [
     "blue",
@@ -25,17 +26,10 @@ export class Main {
     private scoreText: string = "Score: "
     private win: boolean = false
 
-    private redRect: Rectangle
+    private player: Player
 
     private enemyRect: Rectangle
     private enemyColorI: number = 0
-
-    private up: boolean
-    private down: boolean
-    private left: boolean
-    private right: boolean
-
-    private isEnemyOnScreen: boolean
 
     start() {
         this.createGameCanvas();
@@ -68,52 +62,12 @@ export class Main {
     initializeKeyboardListener() {
 
         Main.keyboard = new KeyboardService()
-        Main.keyboard.keyDownEventStream.subscribe((event) => {
 
-            if (event.key.toUpperCase() === 'W' || event.key.toUpperCase() === 'ARROWUP') {
-                event.preventDefault();
-                this.up = true
-            }
-            if (event.key.toUpperCase() === 'A' || event.key.toUpperCase() === 'ARROWLEFT') {
-                event.preventDefault();
-                this.left = true
-            }
-            if (event.key.toUpperCase() === 'S' || event.key.toUpperCase() === 'ARROWDOWN') {
-                event.preventDefault();
-                this.down = true
-            }
-            if (event.key.toUpperCase() === 'D' || event.key.toUpperCase() === 'ARROWRIGHT') {
-                event.preventDefault();
-                this.right = true
-            }
-        })
-
-        Main.keyboard.keyUpEventStream.subscribe((event) => {
-
-            if (event.key.toUpperCase() === 'W' || event.key.toUpperCase() === 'ARROWUP') {
-                event.preventDefault();
-                this.up = false
-            }
-            if (event.key.toUpperCase() === 'A' || event.key.toUpperCase() === 'ARROWLEFT') {
-                event.preventDefault();
-                this.left = false
-            }
-            if (event.key.toUpperCase() === 'S' || event.key.toUpperCase() === 'ARROWDOWN') {
-                event.preventDefault();
-                this.down = false
-            }
-            if (event.key.toUpperCase() === 'D' || event.key.toUpperCase() === 'ARROWRIGHT') {
-                event.preventDefault();
-                this.right = false
-            }
-        })
-
-        console.log("Keyboard event streams registered.")
     }
 
     initializeObjects() {
 
-        this.redRect = new Rectangle(10, 120, 30, 30, 'red')
+        this.player = new Player(10, 120, 30, 30, 'images/player_ship.png', Main.keyboard)
 
         this.createRandomEnemy()
 
@@ -123,7 +77,7 @@ export class Main {
 
     render() {
         Main.context.clearRect(0, 0, Main.canvas.width, Main.canvas.height)
-        this.redRect.draw()
+        this.player.draw()
 
         if (this.enemyRect) {
             this.enemyRect.draw()
@@ -132,8 +86,7 @@ export class Main {
 
     update() {
 
-        this.movePlayerRect()
-
+        this.player.update()
         if (!this.enemyRect) {
             this.createRandomEnemy()
         } else {
@@ -144,24 +97,9 @@ export class Main {
 
     }
 
-    movePlayerRect() {
-        if (this.up) {
-            this.redRect.moveUp()
-        }
-        if (this.left) {
-            this.redRect.moveLeft()
-        }
-        if (this.right) {
-            this.redRect.moveRight()
-        }
-        if (this.down) {
-            this.redRect.moveDown()
-        }
-    }
-
     checkEnemyCollision() {
 
-        if (this.redRect.collides(this.enemyRect)) {
+        if (this.player.collides(this.enemyRect)) {
             this.enemyRect = null
             this.score += 10
         }
@@ -185,7 +123,7 @@ export class Main {
             }
             console.log("Random enemy spawned, but overlapped player.")
 
-        } while (newEnemyRect.collides(this.redRect))
+        } while (this.player.collides(newEnemyRect))
 
         this.enemyRect = newEnemyRect
     }
